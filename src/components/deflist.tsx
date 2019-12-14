@@ -16,7 +16,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
       .replace(/( )?\{bc\}/g, ': ')
       .replace(/( )?\{dx\}/g, '<br /><small>')
       .replace(/( )?\{\/dx\}/g, '</small>')
-      .replace(/(?:\{(?:sx|dxt|a_link|d_link|et_link|i_link|mat)\|)([\w\s]+)(?:[|])?([\w\s.,:+-]+)?(?:\|)?\}/g, (_, text, href) =>
+      .replace(/(?:\{(?:sx|dxt|a_link|d_link|et_link|i_link|mat)\|)([\w\s.,:+-]+)(?:[|])?([\w\s.,:+-]+)?(?:\|)?(?:\d+)?\}/g, (_, text, href) =>
         `<a href="?q=${href || text}">${text}</a>`
       )
       .replace(/(?:\{it\})([\w\s.,:+-]+)(?:\{\/it\})/g, (_, text) => `<em>${text}</em>`)
