@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Collapse } from 'antd';
 
 const illustrationUrl = 'https://merriam-webster.com/assets/mw/static/art/dict/';
+const { Panel } = Collapse;
 
 interface DefListProps {
   definitions: any[] | null;
 }
 
 const DefList: React.FC<DefListProps> = ({ definitions }) => {
-  function parseEntry(text: string) {
+  function parseEntry(text: string = '') {
     return text
       .replace(/^\{bc\}/, '')
       .replace(/( )?\{bc\}/g, ': ')
@@ -22,13 +24,14 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
   }
 
   return (
-    <dl>
+    <Collapse bordered={false} style={{ marginTop: '30px' }}>
       {definitions && definitions.filter((def: any) => typeof def !== 'string').length > 0
         ? definitions.map((definition: any, idx: number) => (
-          <div key={idx}>
-            <dt key={definition.meta?.id}>
+          <Panel key={idx} header={
+            <dt>
               {definition.meta?.id} <em>{definition.fl}</em>
             </dt>
+          }>
             <dd>
               {definition.def?.map((def: any, idx: number) => (
                 <div key={idx}>
@@ -36,7 +39,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
                     <div key={idx}>
                       {sseq.map((sense: any, idx: number) => (
                         <div key={idx}>
-                          <strong>{sense?.[1]?.sn}</strong><br />
+                          {sense?.[1]?.sn && <strong>{sense[1].sn}<br /></strong>}
                           <div dangerouslySetInnerHTML={{ __html: parseEntry(sense?.[1]?.dt?.[0]?.[1]) }} />
                         </div>
                       ))}
@@ -53,7 +56,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
                 </figure>
               )}
             </dd>
-          </div>
+          </Panel>
         )
       ) : definitions && (
         <div>
@@ -73,7 +76,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
         </div>
       )
     }
-  </dl>
+  </Collapse>
   );
 }
 
