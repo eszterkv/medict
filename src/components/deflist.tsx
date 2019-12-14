@@ -24,8 +24,8 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
   return (
     <dl>
       {definitions && definitions.filter((def: any) => typeof def !== 'string').length > 0
-        ? definitions.map((definition: any) => (
-          <>
+        ? definitions.map((definition: any, idx: number) => (
+          <div key={idx}>
             <dt key={definition.meta?.id}>
               {definition.meta?.id} <em>{definition.fl}</em>
             </dt>
@@ -53,7 +53,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
                 </figure>
               )}
             </dd>
-          </>
+          </div>
         )
       ) : definitions && (
         <div>

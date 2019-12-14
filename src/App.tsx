@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   AutoComplete,
@@ -17,10 +17,16 @@ const { Header, Content, Footer } = Layout;
 const App: React.FC = () => {
   const [definitions, setDefinitions] = useState();
 
+  useEffect(() => {
+    const query = window?.location?.search;
+    if (query)
+      search(query.substr(3));
+  }, []);
+
   function search(e: any) {
     const baseUrl = 'https://dictionaryapi.com/api/v3/references/medical/json/';
     const apiKey = process.env.REACT_APP_DICT_API_KEY;
-    const term = e?.target?.value;
+    const term = typeof e === 'string' ? e : e?.target?.value;
 
     axios.get(`${baseUrl}${term}?key=${apiKey}`)
       .then(res => {
