@@ -6,6 +6,7 @@ import {
   Input,
   Layout,
   Row,
+  Typography,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.less';
@@ -13,6 +14,7 @@ import 'antd/dist/antd.less';
 import DefList from './components/deflist';
 
 const { Header, Content, Footer } = Layout;
+const { Text } = Typography;
 
 const App: React.FC = () => {
   const [definitions, setDefinitions] = useState();
@@ -36,7 +38,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <Header>medict</Header>
       <Content style={{ padding: '20px 30px' }}>
         <Row align="middle" justify="center">
@@ -58,7 +60,14 @@ const App: React.FC = () => {
           </Col>
         </Row>
       </Content>
-      <Footer />
+      <Footer style={{ textAlign: 'center' }}>
+        <Text type="secondary">
+          <small>
+            Coded by <a href="https://eszter.space/">me</a>{' '}
+            using the amazing <a href="https://dictionaryapi.com/">Merriam-Webster dictionary API</a>
+          </small>
+        </Text>
+      </Footer>
     </Layout>
   );
 }
