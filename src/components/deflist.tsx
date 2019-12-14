@@ -16,15 +16,18 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
       .replace(/( )?\{bc\}/g, ': ')
       .replace(/( )?\{dx\}/g, '<br /><small>')
       .replace(/( )?\{\/dx\}/g, '</small>')
-      .replace(/(?:\{sx\|)([\w\s]+)(?:[|])([\w\s]+)\|\}/g, (_, text, href) =>
-        `<a href="?q=${href}">${text}</a>`
+      .replace(/(?:\{(?:sx|dxt|a_link|d_link|et_link|i_link|mat)\|)([\w\s]+)(?:[|])?([\w\s.,:+-]+)?(?:\|)?\}/g, (_, text, href) =>
+        `<a href="?q=${href || text}">${text}</a>`
       )
       .replace(/(?:\{it\})([\w\s.,:+-]+)(?:\{\/it\})/g, (_, text) => `<em>${text}</em>`)
+      .replace(/(?:\{)(\/)?(inf|sup)(\})/g, (_, slash, tag) =>
+        `<${slash || ''}${tag === 'sup' ? 'sup' : 'sub'}>`
+      )
     ;
   }
 
   return (
-    <Collapse bordered={false} style={{ marginTop: '30px' }}>
+    <StyledCollapse bordered={false} defaultActiveKey={[0]}>
       {definitions && definitions.filter((def: any) => typeof def !== 'string').length > 0
         ? definitions.map((definition: any, idx: number) => (
           <Panel key={idx} header={
@@ -74,9 +77,8 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
             </>
           )}
         </div>
-      )
-    }
-  </Collapse>
+      )}
+    </StyledCollapse>
   );
 }
 
@@ -85,5 +87,9 @@ const Img = styled.img`
 `;
 
 const Figcaption = styled.figcaption``;
+
+const StyledCollapse = styled(Collapse)`
+  margin-top: 20px;
+`;
 
 export default DefList;

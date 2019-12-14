@@ -20,7 +20,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const query = window?.location?.search;
     if (query)
-      search(query.substr(3));
+      search(query.substr(3).replace(/:\d+$/, ''));
   }, []);
 
   function search(e: any) {
