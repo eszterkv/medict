@@ -30,6 +30,9 @@ const App: React.FC = () => {
     const apiKey = process.env.REACT_APP_DICT_API_KEY;
     const term = typeof e === 'string' ? e : e?.target?.value;
 
+    if (window?.location?.search !== term)
+      window?.history?.pushState({ q: term }, term, `?q=${term}`);
+
     axios.get(`${baseUrl}${term}?key=${apiKey}`)
       .then(res => {
         setDefinitions(res.data);
@@ -39,7 +42,11 @@ const App: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header>medict</Header>
+      <Header>
+        <strong>
+          <a href="/">medict</a>
+        </strong>
+      </Header>
       <Content style={{ padding: '20px 30px' }}>
         <Row align="middle" justify="center">
           <Col xs={24} md={12}>
