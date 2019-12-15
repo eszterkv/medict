@@ -5,6 +5,7 @@ import {
   Col,
   Input,
   Layout,
+  Radio,
   Row,
   Typography,
 } from 'antd';
@@ -17,37 +18,66 @@ const { Header, Content, Footer } = Layout;
 const { Text } = Typography;
 
 const App: React.FC = () => {
+  const APIs: any = {
+    standard: {
+      baseUrl: 'https://dictionaryapi.com/api/v3/references/collegiate/json/',
+      key: process.env.REACT_APP_DICT_API_KEY,
+    },
+    medical: {
+      baseUrl: 'https://dictionaryapi.com/api/v3/references/medical/json/',
+      key: process.env.REACT_APP_DICT_API_KEY_MED,
+    },
+  };
+
+  const [api, setApi] = useState(APIs[localStorage?.getItem('medict-api') || 'standard']);
   const [definitions, setDefinitions] = useState();
+  const [error, setError] = useState();
+
+  useEffect(searchFromUrlParams, [api]);
 
   useEffect(() => {
-    const query = window?.location?.search;
-    if (query)
-      search(query.substr(3).replace(/:\d+$/, ''));
-  }, []);
+    setError(null);
+  }, [api, definitions]);
 
   function search(e: any) {
-    const baseUrl = 'https://dictionaryapi.com/api/v3/references/medical/json/';
-    const apiKey = process.env.REACT_APP_DICT_API_KEY;
     const term = typeof e === 'string' ? e : e?.target?.value;
 
     if (window?.location?.search !== term)
       window?.history?.pushState({ q: term }, term, `?q=${term}`);
 
-    axios.get(`${baseUrl}${term}?key=${apiKey}`)
+    axios.get(`${api.baseUrl}${term}?key=${api.key}`)
       .then(res => {
         setDefinitions(res.data);
       })
-      .catch(console.log);
+      .catch(setError);
+  }
+
+  function searchFromUrlParams() {
+    const query = window?.location?.search;
+    if (query)
+      search(query.substr(3).replace(/:\d+$/, ''));
+  }
+
+  function switchDict(e: any) {
+    setApi(APIs[e.target.value]);
+    localStorage.setItem('medict-api', e.target.value);
   }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header>
-        <strong>
+        <h3>
           <a href="/">medict</a>
-        </strong>
+        </h3>
+        <Radio.Group
+          onChange={switchDict}
+          defaultValue={localStorage.getItem('medict-api') || 'standard'}
+        >
+          <Radio.Button value="standard">Standard</Radio.Button>
+          <Radio.Button value="medical">Medical</Radio.Button>
+        </Radio.Group>
       </Header>
-      <Content style={{ padding: '20px 30px' }}>
+      <Content style={{ padding: '80px 30px 20px' }}>
         <Row align="middle" justify="center">
           <Col xs={24} md={12}>
             <AutoComplete
@@ -63,6 +93,7 @@ const App: React.FC = () => {
                 onPressEnter={search}
               />
             </AutoComplete>
+            {error && `Something went wrong: ${error.message}`}
             <DefList definitions={definitions} />
           </Col>
         </Row>
