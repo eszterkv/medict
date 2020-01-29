@@ -10,7 +10,10 @@ interface DefListProps {
 }
 
 const DefList: React.FC<DefListProps> = ({ definitions }) => {
-  function parseEntry(text: string = '') {
+  function parseEntry(text: string = ''): any {
+    if (Array.isArray(text))
+      return parseEntry(text[0]?.[0]?.[1] || '');
+
     return text
       .replace(/^\{bc\}/, '')
       .replace(/( )?\{bc\}/g, ': ')
@@ -26,13 +29,18 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
     ;
   }
 
+  function parseCaption(text: string = '') {
+    return text
+      .replace(/(?:\{it\})([\w\s.,:+-]+)(?:\{\/it\} )/g, (_, text) => `<br /><em>${text}</em> `)
+  }
+
   return (
     <StyledCollapse bordered={false} defaultActiveKey={[0]}>
       {definitions && definitions.filter((def: any) => typeof def !== 'string').length > 0
         ? definitions.map((definition: any, idx: number) => (
           <Panel key={idx} header={
             <dt>
-              {definition.meta?.id} <em>{definition.fl}</em>
+              {definition.meta?.id} <Italic>{definition.fl}</Italic>
             </dt>
           }>
             <dd>
@@ -41,10 +49,10 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
                   {def.sseq.map((sseq: any, idx: number) => (
                     <div key={idx}>
                       {sseq.map((sense: any, idx: number) => (
-                        <div key={idx}>
+                        <Sense key={idx}>
                           {sense?.[1]?.sn && <strong>{sense[1].sn}<br /></strong>}
                           <div dangerouslySetInnerHTML={{ __html: parseEntry(sense?.[1]?.dt?.[0]?.[1]) }} />
-                        </div>
+                        </Sense>
                       ))}
                     </div>
                   ))}
@@ -54,7 +62,7 @@ const DefList: React.FC<DefListProps> = ({ definitions }) => {
                 <figure>
                   <Img src={`${illustrationUrl}${definition.art.artid}.gif`} alt="" />
                   <Figcaption>
-                    <div dangerouslySetInnerHTML={{ __html: parseEntry(definition.art.capt) }} />
+                    <div dangerouslySetInnerHTML={{ __html: parseCaption(definition.art.capt) }} />
                   </Figcaption>
                 </figure>
               )}
@@ -86,7 +94,20 @@ const Img = styled.img`
   max-width: 100%;
 `;
 
-const Figcaption = styled.figcaption``;
+const Italic = styled.em`
+  @import url('https://fonts.googleapis.com/css?family=Noto+Serif:400i&display=swap');
+  font-family: 'Noto Serif';
+  margin-left: 2px;
+  opacity: .75;
+`;
+
+const Figcaption = styled.figcaption`
+  font-size: 15px;
+`;
+
+const Sense = styled.div`
+  margin-bottom: 8px;
+`;
 
 const StyledCollapse = styled(Collapse)`
   margin-top: 20px;
