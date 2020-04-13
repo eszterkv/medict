@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
   AutoComplete,
@@ -9,7 +9,7 @@ import {
   Row,
   Typography,
 } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { ReadOutlined, SearchOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.less';
 
 import DefList from './components/deflist';
@@ -32,12 +32,12 @@ const App: React.FC = () => {
   const [api, setApi] = useState(APIs[localStorage?.getItem('medict-api') || 'standard']);
   const [definitions, setDefinitions] = useState();
   const [error, setError] = useState();
+  const inputRef = useRef(null);
 
+  useEffect(() => { (inputRef?.current as any)?.focus() }, [inputRef]);
   useEffect(searchFromUrlParams, [api]);
 
-  useEffect(() => {
-    setError(null);
-  }, [api, definitions]);
+  useEffect(() => { setError(null) }, [api, definitions]);
 
   function search(e: any) {
     const term = typeof e === 'string' ? e : e?.target?.value;
@@ -67,7 +67,9 @@ const App: React.FC = () => {
     <Layout style={{ minHeight: '100vh' }}>
       <Header>
         <h3>
-          <a href="/">medict</a>
+          <a href="/">
+            <ReadOutlined style={{ position: 'relative', top: '1px'}} /> medict
+          </a>
         </h3>
         <Radio.Group
           onChange={switchDict}
@@ -87,6 +89,7 @@ const App: React.FC = () => {
               onSearch={() => {}}
             >
               <Input
+                ref={inputRef}
                 size="large"
                 suffix={<SearchOutlined />}
                 placeholder="Search term…"
