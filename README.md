@@ -1,1 +1,1 @@
-[medict.netlify.com](https://medict.netlify.com)
+[medict.netlify.app](https://medict.netlify.app)
