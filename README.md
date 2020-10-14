@@ -1,1 +1,1 @@
-[medict.netlify.app](https://medict.netlify.app)
+a (medical) dictionary using Merriam-Webster Dictionary API
