@@ -104,7 +104,7 @@ const App: React.FC = () => {
       <Footer style={{ textAlign: 'center' }}>
         <Text type="secondary">
           <small>
-            Coded by <a href="https://eszter.space/">me</a>{' '}
+            Coded by me{' '}
             using the amazing <a href="https://dictionaryapi.com/">Merriam-Webster dictionary API</a>
           </small>
         </Text>
